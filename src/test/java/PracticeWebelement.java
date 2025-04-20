@@ -155,26 +155,28 @@ public class PracticeWebelement {
         }*/
 
         //Web Table Fixed Header
+        //Web Table Fixed Header
         page.evaluate("window.scrollBy(0, 500);");
-        // Wait for the table to load
-        page.waitForSelector(".tableFixHead", new Locator.WaitForOptions().setTimeout(60000));  // 60 seconds timeout
+        // Wait for the table to be available
+        // Get all rows inside tbody
+        Locator rows = page.locator("#product tbody tr");
 
-        // Locate the table body (tbody)
-        Locator tableBody = page.locator("table tbody");
-        int rowCount = tableBody.locator("tr").count();
-        System.out.println(rowCount);
-        // Loop through all the rows and print the data in each row
+        int rowCount = rows.count();
+        System.out.println("Total rows (excluding header): " + rowCount);
+        // Loop through each row
         for (int i = 0; i < rowCount; i++) {
-            // Get data from each column (td) of the row (tr)
-            String name = tableBody.locator("tr").nth(i).locator("td:nth-child(1)").textContent();
-            String position = tableBody.locator("tr").nth(i).locator("td:nth-child(2)").textContent();
-            String city = tableBody.locator("tr").nth(i).locator("td:nth-child(3)").textContent();
-            String amount = tableBody.locator("tr").nth(i).locator("td:nth-child(4)").textContent();
-            // Print data from the row
-            System.out.println("Row " + (i + 1) + ": Name = " + name + ", Position = " + position +
-                    ", City = " + city + ", Amount = " + amount);
-        }
+            Locator row = rows.nth(i);
+            List<String> cells = row.locator("td").allTextContents();
 
+            // Print each cell value in the row
+            if (cells.size() == 4) {
+                System.out.println("Row " + (i + 1) +
+                        ": Name = " + cells.get(0) +
+                        ", Position = " + cells.get(1) +
+                        ", City = " + cells.get(2) +
+                        ", Amount = " + cells.get(3));
+            }
+        }
         // Adding a wait to allow the dialog to be captured and handled
         Thread.sleep(2000);
 
